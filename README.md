@@ -2,7 +2,7 @@
 
 An autonomous AI pipeline that reads, scores, and tracks job postings — so your mornings start with a prioritized shortlist, not a haystack.
 
-**[▶ Live interactive demo](https://YOUR-USERNAME.github.io/job-search-agent/)** · Built with Claude (Anthropic Agent SDK / Cowork scheduled tasks)
+**[▶ Live interactive demo](https://maryistafanous.github.io/job-search-agent/)** · Built with Claude (Anthropic Agent SDK / Cowork scheduled tasks)
 
 ![Architecture](docs/architecture.png)
 
