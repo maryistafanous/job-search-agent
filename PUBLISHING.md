@@ -1,7 +1,7 @@
 # Publishing to GitHub + GitHub Pages
 
 Goal: a public repo plus a live demo link for your resume, e.g.
-`https://<username>.github.io/job-search-agent/`
+`https://maryistafanous.github.io/job-search-agent/`
 
 ## One-time (about 20 minutes, all in the browser)
 
@@ -14,8 +14,8 @@ Goal: a public repo plus a live demo link for your resume, e.g.
 4. Enable Pages: repo → Settings → Pages → Source: "Deploy from a branch" →
    Branch: main, folder: `/docs` → Save.
 5. Wait ~2 minutes → your demo is live at
-   `https://<username>.github.io/job-search-agent/`
-6. Edit README.md line 5: replace YOUR-USERNAME with your username so the demo
+   `https://maryistafanous.github.io/job-search-agent/`
+6. Edit README.md line 5: replace maryistafanous with your username so the demo
    link works from the repo page too.
 
 ## Before you publish — checklist

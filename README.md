@@ -2,7 +2,7 @@
 
 An autonomous AI pipeline that reads, scores, and tracks job postings — so your mornings start with a prioritized shortlist, not a haystack.
 
-**[▶ Live interactive demo](https://maryistafanous.github.io/job-search-agent/)** · Built with Claude (Anthropic Agent SDK / Cowork scheduled tasks)
+**[▶ Live interactive demo](https://maryistafanous.github.io/job-search-agent/)** · [Case study (PDF)](docs/case-study.pdf) · Built with Claude (Anthropic Agent SDK / Cowork scheduled tasks)
 
 ![Architecture](docs/architecture.png)
 
@@ -10,12 +10,15 @@ An autonomous AI pipeline that reads, scores, and tracks job postings — so you
 
 Every morning, unattended:
 
-1. **Data-Entry Agent** parses overnight job-alert emails (LinkedIn, Indeed), de-duplicates against everything already tracked, and inserts new roles into a SQLite database.
-2. **Screening Agent** opens each posting — automatically falling back to the employer's own careers site when LinkedIn won't render the description — and scores it 1–5 against *your* written fitness rubric and *your* resume. It records salary (only if actually stated), key gaps, and the strongest interview "anchor story" for each role.
-3. **Career-Scan Agent** (weekly) proactively checks a curated list of target companies' own career pages — catching roles that never hit the job boards — and feeds matches into the same pipeline.
-4. **Inbox-Sweep Agent** (on demand) reads recruiter/application emails and keeps every application's status current.
+1. **Data-Entry Agent** (daily, 7:05 AM) parses overnight job-alert emails (LinkedIn, Indeed), de-duplicates against everything already tracked, and inserts new roles into a SQLite database.
+2. **Career-Scan Agent** (daily, 7:15 AM) proactively checks a curated list of target companies' own career pages — catching roles that never hit the job boards — and feeds matches into the same pipeline.
+3. **Screening Agent** (daily, 7:30 AM) opens each posting — automatically falling back to the employer's own careers site when LinkedIn won't render the description — and scores it 1–5 against *your* written fitness rubric and *your* resume. It records salary (only if actually stated), key gaps, and the strongest interview "anchor story" for each role. It finishes by rebuilding a personal dashboard of high-fit, not-yet-applied roles with one-click actions.
+4. **Inbox-Sweep Agent** (daily, 7:45 AM) reads recruiter/application emails and keeps every application's status current.
+5. **Resume Tailor** (on demand) turns any high-fit tracker row into an application kit: an ATS-optimized resume variant that honestly mirrors the posting's keywords, weaves in the pre-selected anchor story, plus a cover-letter draft. You pick the roles; it never fabricates experience.
 
-Your job shrinks to reviewing a prioritized shortlist over coffee.
+The scheduled agents execute as a **single sequenced pipeline**: if the machine was asleep at 7 AM, the entire sequence runs once on wake — still in order, so schedule collisions are impossible by construction.
+
+Your job shrinks to reviewing a prioritized shortlist over coffee — and saying "prepare a kit for #12" when one deserves an application.
 
 ## Results (author's first 7 days)
 

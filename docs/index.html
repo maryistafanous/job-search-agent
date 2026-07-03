@@ -56,6 +56,18 @@
   button.ghost{background:#fff; color:var(--blue); border:1px solid var(--blue);}
   .clock{font-size:13px; color:var(--gray); text-align:right; margin-bottom:8px; min-height:18px;}
   .clock b{color:var(--navy); font-size:15px;}
+  .atsbtn{background:var(--blue);color:#fff;border:none;border-radius:6px;padding:5px 10px;font-size:11.5px;cursor:pointer;font-family:inherit;}
+  .atsbtn:hover{background:var(--navy);} .atsbtn.ok{background:var(--green);}
+  .applybtn{display:inline-block;background:#fff;color:var(--blue);border:1px solid var(--blue);border-radius:6px;padding:4px 10px;font-size:11.5px;cursor:pointer;font-family:inherit;margin-left:4px;}
+  .applybtn:hover{background:var(--lt);}
+  .dtabs{display:flex;gap:8px;margin:4px 0 12px;flex-wrap:wrap;}
+  .dtab{background:#fff;border:1px solid var(--border);border-radius:8px;padding:7px 14px;font-size:12.5px;cursor:pointer;font-family:inherit;color:var(--gray);}
+  .dtab.on{background:var(--navy);color:#fff;border-color:var(--navy);font-weight:bold;}
+  select.stsel{padding:4px 5px;border:1px solid var(--border);border-radius:6px;font-size:11.5px;font-family:inherit;background:#fff;}
+  select.stsel.dirty{border-color:#D9A441;background:var(--amberbg);font-weight:bold;}
+  th.sortable{cursor:pointer;user-select:none;}
+  #toast{position:fixed;bottom:24px;left:50%;transform:translateX(-50%);background:var(--navy);color:#fff;padding:10px 18px;border-radius:8px;font-size:13px;opacity:0;transition:opacity .3s;pointer-events:none;max-width:90%;}
+  #toast.show{opacity:1;}
   @media(max-width:700px){ .stepper{flex-wrap:wrap;} .step{flex:1 1 45%;} .cards{grid-template-columns:repeat(2,1fr);} }
 </style>
 </head>
@@ -68,8 +80,8 @@
 
   <div class="stepper" id="stepper">
     <div class="step" data-s="0"><span class="n">1</span><b>Overnight</b>Job alerts pile up</div>
-    <div class="step" data-s="1"><span class="n">2</span><b>7:08 AM — Data-Entry Agent</b>Parse, de-dupe, log</div>
-    <div class="step" data-s="2"><span class="n">3</span><b>8:33 AM — Screening Agent</b>Read &amp; score every role</div>
+    <div class="step" data-s="1"><span class="n">2</span><b>7:05 AM — Pipeline: Data Entry</b>Parse, de-dupe, log</div>
+    <div class="step" data-s="2"><span class="n">3</span><b>7:30 AM — Pipeline: Screening</b>Read &amp; score every role</div>
     <div class="step" data-s="3"><span class="n">4</span><b>Your morning</b>Review the shortlist</div>
   </div>
 
@@ -84,9 +96,16 @@
     <button class="ghost" onclick="restart()">↺ Restart</button>
     <button class="ghost" onclick="nextStage()">Skip ahead →</button>
   </div>
+  <div style="text-align:center;margin-top:22px;font-size:14px;color:var(--gray)">
+    <a href="case-study.pdf" style="color:var(--blue);font-weight:bold">📄 Full case study (PDF)</a> &nbsp;·&nbsp;
+    <a href="architecture.png" style="color:var(--blue);font-weight:bold">🗺 Architecture diagram</a> &nbsp;·&nbsp;
+    <a href="https://github.com/maryistafanous/job-search-agent" style="color:var(--blue);font-weight:bold">💻 Code &amp; setup on GitHub</a>
+  </div>
 </div>
 
+<div id="toast"></div>
 <script>
+const POSTED = ["2026-06-28","2026-06-30","2026-06-25","2026-06-27","2026-06-29","2026-06-24"];
 const jobs = [
   {t:"Director, Software Engineering", c:"Northline Retail Group", sal:"$185K–$220K", score:5, gaps:"None material", status:"APPLY"},
   {t:"Director, AI Enablement", c:"BrightPath Health", sal:"$175K–$210K", score:4, gaps:"Healthcare domain (preferred only)", status:"APPLY"},
@@ -97,9 +116,9 @@ const jobs = [
 ];
 const stages = [
   { clock:"11:47 PM", narr:"While you sleep, LinkedIn and Indeed alert emails arrive — six new postings tonight, dozens on a busy night. Nobody should spend their evening reading these." },
-  { clock:"7:08 AM", narr:"The Data-Entry Agent wakes up, parses every alert email, checks each posting against the 145 roles already tracked, and inserts only what's new into the SQLite tracker." },
-  { clock:"8:33 AM", narr:"The Screening Agent opens each posting (falling back to the employer's own careers site when LinkedIn won't render), and scores it 1–5 against a written fitness rubric and the right resume version — capturing salary, gaps, and the best interview story." },
-  { clock:"9:00 AM ☕", narr:"You sit down to a prioritized shortlist. High-fit roles on top, non-fits already skipped — each with a documented reason. Twenty minutes, done." },
+  { clock:"7:05 AM", narr:"The morning pipeline fires — one scheduled task running four phases in strict sequence (if the laptop was asleep, the whole pipeline simply runs on wake, still in order). First, the Data-Entry Agent parses every alert email, checks each posting against the 145 roles already tracked, and inserts only what's new into the SQLite tracker." },
+  { clock:"7:30 AM", narr:"Next in the pipeline — after a career-page scan of target companies — the Screening Agent opens each posting (falling back to the employer's own careers site when LinkedIn won't render), and scores it 1–5 against a written fitness rubric and the right resume version — capturing salary, gaps, and the best interview story." },
+  { clock:"9:00 AM ☕", narr:"You sit down to a live dashboard: tabs for high-fit roles, pending applications, and every posting — sortable, filterable, statuses editable inline — with one-click ATS resume generation and Apply links. Twenty minutes, done." },
 ];
 let stage = -1, playing = false, timers = [];
 
@@ -152,10 +171,6 @@ function setStage(s){
     if(playing) later(nextStage, 250+jobs.length*350+2600);
   }
   if(s===3){
-    const sorted = [...jobs].sort((a,b)=>b.score-a.score);
-    let rows = sorted.map((j,i)=>`<tr class="row" id="r${i}"><td><b>${j.t}</b><br><span style="color:var(--gray)">${j.c}</span></td>
-      <td>${j.sal}</td><td><span class="chip s${j.score}">${j.score}</span></td>
-      <td><span class="st ${j.status==='SKIP'?'skip':'apply'}">${j.status}</span></td></tr>`).join("");
     c.innerHTML =
       `<div class="cards">
         <div class="card" id="c0"><div class="big">145</div><div class="lbl">roles scored in week 1</div></div>
@@ -163,14 +178,47 @@ function setStage(s){
         <div class="card" id="c2"><div class="big">24</div><div class="lbl">high-fit roles surfaced</div></div>
         <div class="card" id="c3"><div class="big">20<span style="font-size:16px">min</span></div><div class="lbl">of human time per day</div></div>
       </div>
-      <table><thead><tr><th>Role (sorted by fit)</th><th>Salary</th><th>Fit</th><th>Action</th></tr></thead><tbody>${rows}</tbody></table>
+      <div class="dtabs">
+        <button class="dtab on" data-v="fit" onclick="dashView('fit')">🎯 Ready (high-fit)</button>
+        <button class="dtab" data-v="pend" onclick="dashView('pend')">📋 Pending — To Apply</button>
+        <button class="dtab" data-v="all" onclick="dashView('all')">🗂 All postings</button>
+      </div>
+      <div id="dashtbl"></div>
       <div class="cta" id="cta">The same pattern — <b>ingest → evaluate against your rules → record → surface what matters</b> — works for sales leads, invoices, resumes, vendor quotes, and support tickets.<br>If your team reads, judges, and logs anything repeatedly, an agent can do the first pass.</div>`;
     [0,1,2,3].forEach(i=> later(()=>el("c"+i).classList.add("show"), 200+i*250));
-    sorted.forEach((_,i)=> later(()=>{ const r=el("r"+i); if(r) r.classList.add("show"); }, 1300+i*300));
-    later(()=>el("cta").classList.add("show"), 1300+sorted.length*300+400);
-    later(()=>{ playing=false; el("playBtn").textContent="▶ Replay demo"; }, 4000);
+    renderDash();
+    later(()=>el("cta").classList.add("show"), 2200);
+    later(()=>{ playing=false; el("playBtn").textContent="▶ Replay demo"; }, 3500);
   }
 }
+
+let dview = "fit", dsort = null, ddir = 1;
+const DSTAT = ["To Apply","Applied","Interviewing","Offer","Rejected","SKIP"];
+function dashView(v){ dview = v; dsort = null;
+  document.querySelectorAll(".dtab").forEach(b=>b.classList.toggle("on", b.dataset.v===v));
+  renderDash(); }
+function dashSort(k){ if(dsort===k) ddir=-ddir; else { dsort=k; ddir=1; } renderDash(); }
+function renderDash(){
+  const box = el("dashtbl"); if(!box) return;
+  let rs = jobs.map((j,i)=>({ ...j, posted: POSTED[i], st: j.status==='SKIP'?'SKIP':(j.status==='REVIEW'?'To Apply':'To Apply') }));
+  if(dview==="fit")  rs = rs.filter(j=>j.score>=4);
+  if(dview==="pend") rs = rs.filter(j=>j.st==="To Apply" && j.status!=="SKIP");
+  const [k,d] = dsort ? [dsort,ddir] : ["score",-1];
+  rs.sort((a,b)=>{ let x=a[k],y=b[k]; if(k==="score"){x=+x;y=+y;} else {x=String(x).toLowerCase();y=String(y).toLowerCase();}
+    return (x<y?-1:x>y?1:0)*d; });
+  const hd = (key,label)=>`<th class="sortable" onclick="dashSort('${key}')">${label}${dsort===key?(ddir>0?" ▲":" ▼"):""}</th>`;
+  let h = `<table><thead><tr>${hd("t","Role")}${hd("sal","Salary")}${hd("score","Fit")}${hd("posted","Posted")}<th>Status</th><th>Actions</th></tr></thead><tbody>`;
+  for(const j of rs){
+    const opts = DSTAT.map(x=>`<option ${x===j.st?"selected":""}>${x}</option>`).join("");
+    const acts = j.status==='SKIP' ? `<span style="color:#B9C2CC">—</span>`
+      : `<button class="atsbtn" onclick="demoAts(this)">📄 ATS resume</button><button class="applybtn" onclick="demoApply()">↗ Apply</button>`;
+    h += `<tr><td><b>${j.t}</b><br><span style="color:var(--gray)">${j.c}</span></td>
+      <td>${j.sal}</td><td><span class="chip s${j.score}">${j.score}</span></td><td>${j.posted}</td>
+      <td><select class="stsel" onchange="demoStatus(this)">${opts}</select></td><td>${acts}</td></tr>`; }
+  box.innerHTML = h + "</tbody></table>";
+}
+function demoStatus(sel){ sel.classList.add("dirty");
+  toast("Demo: status change queued — in the live system, one click copies a batch update command that Claude applies to the database safely."); }
 
 function nextStage(){ if(stage < 3) setStage(stage+1); }
 function togglePlay(){
@@ -181,6 +229,12 @@ function togglePlay(){
 function restart(){ playing=true; el("playBtn").textContent="⏸ Pause"; setStage(0); }
 document.querySelectorAll(".step").forEach(st=> st.addEventListener("click", ()=>{ playing=false; el("playBtn").textContent="▶ Resume"; setStage(+st.dataset.s); }));
 
+function toast(msg){ const t = el("toast"); t.textContent = msg; t.classList.add("show");
+  setTimeout(()=>t.classList.remove("show"), 3200); }
+function demoAts(btn){ btn.textContent = "✓ Kit queued"; btn.classList.add("ok");
+  toast("Demo: in the live system, the resume-tailor agent builds an ATS-optimized resume from your base resume — honestly mirroring the posting's keywords — and saves it to your applications folder.");
+  setTimeout(()=>{ btn.textContent = "📄 Create ATS resume"; btn.classList.remove("ok"); }, 3500); }
+function demoApply(){ toast("Demo: in the live system this opens the employer's application page in a new tab."); }
 setStage(0);
 </script>
 </body>
