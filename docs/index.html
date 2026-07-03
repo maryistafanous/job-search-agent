@@ -1,0 +1,241 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Personalized Job-Search Agent — Live Demo</title>
+<style>
+  :root{
+    --navy:#1F4E79; --blue:#2E75B6; --lt:#EAF2F8; --amber:#D9A441; --amberbg:#FFF3DC;
+    --green:#3E8E48; --greenbg:#E3F0E4; --red:#C0504D; --redbg:#F6E3E2; --gray:#666;
+    --border:#D8DEE6;
+  }
+  *{box-sizing:border-box; margin:0; padding:0;}
+  body{font-family:Arial,Helvetica,sans-serif; background:#F4F6F9; color:#2B2B2B; padding:24px;}
+  .wrap{max-width:980px; margin:0 auto;}
+  header{text-align:center; margin-bottom:20px;}
+  header h1{color:var(--navy); font-size:26px;}
+  header p{color:var(--gray); font-size:15px; margin-top:6px;}
+  .stepper{display:flex; gap:8px; margin:18px 0;}
+  .step{flex:1; background:#fff; border:1px solid var(--border); border-radius:10px; padding:10px 12px;
+        font-size:13px; color:var(--gray); transition:all .3s; cursor:pointer;}
+  .step .n{display:inline-block; width:22px; height:22px; border-radius:50%; background:#E1E6EC;
+        color:#555; text-align:center; line-height:22px; font-weight:bold; margin-right:6px; font-size:12px;}
+  .step.active{border-color:var(--blue); box-shadow:0 2px 8px rgba(46,117,182,.18); color:#222;}
+  .step.active .n{background:var(--blue); color:#fff;}
+  .step.done .n{background:var(--green); color:#fff;}
+  .step b{display:block; margin-top:2px; font-size:13px;}
+  .stage{background:#fff; border:1px solid var(--border); border-radius:12px; padding:20px; min-height:340px;}
+  .narr{background:var(--lt); border-left:4px solid var(--blue); padding:10px 14px; border-radius:6px;
+        font-size:14px; margin-bottom:16px; min-height:44px;}
+  table{width:100%; border-collapse:collapse; font-size:13px;}
+  th{background:var(--navy); color:#fff; text-align:left; padding:8px 10px; font-size:12px;}
+  td{padding:7px 10px; border-bottom:1px solid #EEF1F5;}
+  tr.row{opacity:0; transform:translateY(6px); transition:all .45s;}
+  tr.row.show{opacity:1; transform:none;}
+  .chip{display:inline-block; padding:2px 10px; border-radius:12px; font-weight:bold; font-size:12px;}
+  .s5,.s4{background:var(--greenbg); color:var(--green);}
+  .s3{background:var(--amberbg); color:#9C7A1E;}
+  .s2,.s1{background:var(--redbg); color:var(--red);}
+  .st{font-size:11.5px; font-weight:bold; padding:2px 8px; border-radius:4px;}
+  .apply{background:var(--greenbg); color:var(--green);}
+  .skip{background:#EFEFEF; color:#888;}
+  .pending{color:#B9C2CC; font-style:italic;}
+  .cards{display:grid; grid-template-columns:repeat(4,1fr); gap:12px; margin:14px 0;}
+  .card{background:var(--lt); border-radius:10px; padding:14px; text-align:center; opacity:0; transform:scale(.94); transition:all .5s;}
+  .card.show{opacity:1; transform:none;}
+  .card .big{font-size:30px; font-weight:bold; color:var(--navy);}
+  .card .lbl{font-size:12px; color:var(--gray); margin-top:4px;}
+  .cta{margin-top:16px; background:var(--navy); color:#fff; border-radius:10px; padding:16px 18px; font-size:14px; line-height:1.5; opacity:0; transition:opacity .6s;}
+  .cta.show{opacity:1;}
+  .cta b{color:#FFD98E;}
+  .controls{display:flex; gap:10px; justify-content:center; margin-top:18px;}
+  button{background:var(--blue); color:#fff; border:none; border-radius:8px; padding:9px 20px;
+        font-size:14px; cursor:pointer; font-family:inherit;}
+  button:hover{background:var(--navy);}
+  button.ghost{background:#fff; color:var(--blue); border:1px solid var(--blue);}
+  .clock{font-size:13px; color:var(--gray); text-align:right; margin-bottom:8px; min-height:18px;}
+  .clock b{color:var(--navy); font-size:15px;}
+  .atsbtn{background:var(--blue);color:#fff;border:none;border-radius:6px;padding:5px 10px;font-size:11.5px;cursor:pointer;font-family:inherit;}
+  .atsbtn:hover{background:var(--navy);} .atsbtn.ok{background:var(--green);}
+  .applybtn{display:inline-block;background:#fff;color:var(--blue);border:1px solid var(--blue);border-radius:6px;padding:4px 10px;font-size:11.5px;cursor:pointer;font-family:inherit;margin-left:4px;}
+  .applybtn:hover{background:var(--lt);}
+  .dtabs{display:flex;gap:8px;margin:4px 0 12px;flex-wrap:wrap;}
+  .dtab{background:#fff;border:1px solid var(--border);border-radius:8px;padding:7px 14px;font-size:12.5px;cursor:pointer;font-family:inherit;color:var(--gray);}
+  .dtab.on{background:var(--navy);color:#fff;border-color:var(--navy);font-weight:bold;}
+  select.stsel{padding:4px 5px;border:1px solid var(--border);border-radius:6px;font-size:11.5px;font-family:inherit;background:#fff;}
+  select.stsel.dirty{border-color:#D9A441;background:var(--amberbg);font-weight:bold;}
+  th.sortable{cursor:pointer;user-select:none;}
+  #toast{position:fixed;bottom:24px;left:50%;transform:translateX(-50%);background:var(--navy);color:#fff;padding:10px 18px;border-radius:8px;font-size:13px;opacity:0;transition:opacity .3s;pointer-events:none;max-width:90%;}
+  #toast.show{opacity:1;}
+  @media(max-width:700px){ .stepper{flex-wrap:wrap;} .step{flex:1 1 45%;} .cards{grid-template-columns:repeat(2,1fr);} }
+</style>
+</head>
+<body>
+<div class="wrap">
+  <header>
+    <h1>Personalized Job-Search Agent</h1>
+    <p>Autonomous AI agents that read, score, and track job postings — so mornings start with a shortlist, not a haystack.</p>
+  </header>
+
+  <div class="stepper" id="stepper">
+    <div class="step" data-s="0"><span class="n">1</span><b>Overnight</b>Job alerts pile up</div>
+    <div class="step" data-s="1"><span class="n">2</span><b>7:05 AM — Pipeline: Data Entry</b>Parse, de-dupe, log</div>
+    <div class="step" data-s="2"><span class="n">3</span><b>7:30 AM — Pipeline: Screening</b>Read &amp; score every role</div>
+    <div class="step" data-s="3"><span class="n">4</span><b>Your morning</b>Review the shortlist</div>
+  </div>
+
+  <div class="stage">
+    <div class="clock" id="clock"></div>
+    <div class="narr" id="narr"></div>
+    <div id="content"></div>
+  </div>
+
+  <div class="controls">
+    <button id="playBtn" onclick="togglePlay()">▶ Play demo</button>
+    <button class="ghost" onclick="restart()">↺ Restart</button>
+    <button class="ghost" onclick="nextStage()">Skip ahead →</button>
+  </div>
+  <div style="text-align:center;margin-top:22px;font-size:14px;color:var(--gray)">
+    <a href="case-study.pdf" style="color:var(--blue);font-weight:bold">📄 Full case study (PDF)</a> &nbsp;·&nbsp;
+    <a href="architecture.png" style="color:var(--blue);font-weight:bold">🗺 Architecture diagram</a> &nbsp;·&nbsp;
+    <a href="https://github.com/maryistafanous/job-search-agent" style="color:var(--blue);font-weight:bold">💻 Code &amp; setup on GitHub</a>
+  </div>
+</div>
+
+<div id="toast"></div>
+<script>
+const POSTED = ["2026-06-28","2026-06-30","2026-06-25","2026-06-27","2026-06-29","2026-06-24"];
+const jobs = [
+  {t:"Director, Software Engineering", c:"Northline Retail Group", sal:"$185K–$220K", score:5, gaps:"None material", status:"APPLY"},
+  {t:"Director, AI Enablement", c:"BrightPath Health", sal:"$175K–$210K", score:4, gaps:"Healthcare domain (preferred only)", status:"APPLY"},
+  {t:"Sr. Engineering Manager, Platforms", c:"Cobalt Commerce", sal:"$170K–$195K", score:4, gaps:"Smaller team scope", status:"APPLY"},
+  {t:"Director of Technical Programs", c:"Fairmont Logistics", sal:"Unlisted", score:3, gaps:"TPM-heavy; salary unknown", status:"REVIEW"},
+  {t:"Staff Site Reliability Engineer", c:"QuietSignal", sal:"$180K–$205K", score:2, gaps:"Hands-on SRE required — red-flag cap", status:"SKIP"},
+  {t:"Solutions Architect (Pre-sales)", c:"Vantage CRM", sal:"$150K + comm.", score:1, gaps:"Wrong scope: IC pre-sales demos", status:"SKIP"},
+];
+const stages = [
+  { clock:"11:47 PM", narr:"While you sleep, LinkedIn and Indeed alert emails arrive — six new postings tonight, dozens on a busy night. Nobody should spend their evening reading these." },
+  { clock:"7:05 AM", narr:"The morning pipeline fires — one scheduled task running four phases in strict sequence (if the laptop was asleep, the whole pipeline simply runs on wake, still in order). First, the Data-Entry Agent parses every alert email, checks each posting against the 145 roles already tracked, and inserts only what's new into the SQLite tracker." },
+  { clock:"7:30 AM", narr:"Next in the pipeline — after a career-page scan of target companies — the Screening Agent opens each posting (falling back to the employer's own careers site when LinkedIn won't render), and scores it 1–5 against a written fitness rubric and the right resume version — capturing salary, gaps, and the best interview story." },
+  { clock:"9:00 AM ☕", narr:"You sit down to a live dashboard: tabs for high-fit roles, pending applications, and every posting — sortable, filterable, statuses editable inline — with one-click ATS resume generation and Apply links. Twenty minutes, done." },
+];
+let stage = -1, playing = false, timers = [];
+
+function el(id){ return document.getElementById(id); }
+function clearTimers(){ timers.forEach(clearTimeout); timers = []; }
+function later(fn, ms){ timers.push(setTimeout(fn, ms)); }
+
+function renderTable(mode){
+  let rows = jobs.map((j,i) => {
+    const scoreCell = mode >= 2 ? `<span class="chip s${j.score}">${j.score}</span>` : `<span class="pending">queued…</span>`;
+    const gapCell   = mode >= 2 ? j.gaps : `<span class="pending">—</span>`;
+    const salCell   = mode >= 2 ? j.sal : `<span class="pending">—</span>`;
+    const stCell    = mode >= 3 ? `<span class="st ${j.status==='SKIP'?'skip':'apply'}">${j.status}</span>` : `<span class="pending">—</span>`;
+    return `<tr class="row" id="r${i}"><td><b>${j.t}</b><br><span style="color:var(--gray)">${j.c}</span></td>
+      <td>${salCell}</td><td>${scoreCell}</td><td style="max-width:220px">${gapCell}</td><td>${stCell}</td></tr>`;
+  }).join("");
+  return `<table><thead><tr><th>Role</th><th>Salary</th><th>Fit (1–5)</th><th>Key gaps</th><th>Action</th></tr></thead><tbody>${rows}</tbody></table>`;
+}
+
+function showRowsSequentially(sorted){
+  jobs.forEach((_,i)=> later(()=>{ const r = el("r"+i); if(r) r.classList.add("show"); }, 250 + i*350));
+}
+
+function setStage(s){
+  clearTimers();
+  stage = s;
+  document.querySelectorAll(".step").forEach((st,i)=>{
+    st.classList.toggle("active", i===s);
+    st.classList.toggle("done", i<s);
+  });
+  el("clock").innerHTML = "<b>" + stages[s].clock + "</b>";
+  el("narr").textContent = stages[s].narr;
+  const c = el("content");
+
+  if(s===0){
+    c.innerHTML = `<div style="display:grid;gap:8px">` + jobs.map((j,i)=>
+      `<div class="row" id="r${i}" style="background:var(--lt);border:1px solid var(--border);border-radius:8px;padding:10px 14px;font-size:13px;opacity:0;transform:translateY(6px);transition:all .45s">
+        📧 <b>New job alert:</b> ${j.t} — ${j.c}</div>`).join("") + `</div>`;
+    jobs.forEach((_,i)=> later(()=>{ el("r"+i).style.opacity=1; el("r"+i).style.transform="none"; }, 300+i*450));
+    if(playing) later(nextStage, 300+jobs.length*450+1800);
+  }
+  if(s===1){
+    c.innerHTML = renderTable(1);
+    showRowsSequentially();
+    if(playing) later(nextStage, 250+jobs.length*350+2200);
+  }
+  if(s===2){
+    c.innerHTML = renderTable(2);
+    showRowsSequentially();
+    if(playing) later(nextStage, 250+jobs.length*350+2600);
+  }
+  if(s===3){
+    c.innerHTML =
+      `<div class="cards">
+        <div class="card" id="c0"><div class="big">145</div><div class="lbl">roles scored in week 1</div></div>
+        <div class="card" id="c1"><div class="big">68%</div><div class="lbl">auto-skipped with reasons</div></div>
+        <div class="card" id="c2"><div class="big">24</div><div class="lbl">high-fit roles surfaced</div></div>
+        <div class="card" id="c3"><div class="big">20<span style="font-size:16px">min</span></div><div class="lbl">of human time per day</div></div>
+      </div>
+      <div class="dtabs">
+        <button class="dtab on" data-v="fit" onclick="dashView('fit')">🎯 Ready (high-fit)</button>
+        <button class="dtab" data-v="pend" onclick="dashView('pend')">📋 Pending — To Apply</button>
+        <button class="dtab" data-v="all" onclick="dashView('all')">🗂 All postings</button>
+      </div>
+      <div id="dashtbl"></div>
+      <div class="cta" id="cta">The same pattern — <b>ingest → evaluate against your rules → record → surface what matters</b> — works for sales leads, invoices, resumes, vendor quotes, and support tickets.<br>If your team reads, judges, and logs anything repeatedly, an agent can do the first pass.</div>`;
+    [0,1,2,3].forEach(i=> later(()=>el("c"+i).classList.add("show"), 200+i*250));
+    renderDash();
+    later(()=>el("cta").classList.add("show"), 2200);
+    later(()=>{ playing=false; el("playBtn").textContent="▶ Replay demo"; }, 3500);
+  }
+}
+
+let dview = "fit", dsort = null, ddir = 1;
+const DSTAT = ["To Apply","Applied","Interviewing","Offer","Rejected","SKIP"];
+function dashView(v){ dview = v; dsort = null;
+  document.querySelectorAll(".dtab").forEach(b=>b.classList.toggle("on", b.dataset.v===v));
+  renderDash(); }
+function dashSort(k){ if(dsort===k) ddir=-ddir; else { dsort=k; ddir=1; } renderDash(); }
+function renderDash(){
+  const box = el("dashtbl"); if(!box) return;
+  let rs = jobs.map((j,i)=>({ ...j, posted: POSTED[i], st: j.status==='SKIP'?'SKIP':(j.status==='REVIEW'?'To Apply':'To Apply') }));
+  if(dview==="fit")  rs = rs.filter(j=>j.score>=4);
+  if(dview==="pend") rs = rs.filter(j=>j.st==="To Apply" && j.status!=="SKIP");
+  const [k,d] = dsort ? [dsort,ddir] : ["score",-1];
+  rs.sort((a,b)=>{ let x=a[k],y=b[k]; if(k==="score"){x=+x;y=+y;} else {x=String(x).toLowerCase();y=String(y).toLowerCase();}
+    return (x<y?-1:x>y?1:0)*d; });
+  const hd = (key,label)=>`<th class="sortable" onclick="dashSort('${key}')">${label}${dsort===key?(ddir>0?" ▲":" ▼"):""}</th>`;
+  let h = `<table><thead><tr>${hd("t","Role")}${hd("sal","Salary")}${hd("score","Fit")}${hd("posted","Posted")}<th>Status</th><th>Actions</th></tr></thead><tbody>`;
+  for(const j of rs){
+    const opts = DSTAT.map(x=>`<option ${x===j.st?"selected":""}>${x}</option>`).join("");
+    const acts = j.status==='SKIP' ? `<span style="color:#B9C2CC">—</span>`
+      : `<button class="atsbtn" onclick="demoAts(this)">📄 ATS resume</button><button class="applybtn" onclick="demoApply()">↗ Apply</button>`;
+    h += `<tr><td><b>${j.t}</b><br><span style="color:var(--gray)">${j.c}</span></td>
+      <td>${j.sal}</td><td><span class="chip s${j.score}">${j.score}</span></td><td>${j.posted}</td>
+      <td><select class="stsel" onchange="demoStatus(this)">${opts}</select></td><td>${acts}</td></tr>`; }
+  box.innerHTML = h + "</tbody></table>";
+}
+function demoStatus(sel){ sel.classList.add("dirty");
+  toast("Demo: status change queued — in the live system, one click copies a batch update command that Claude applies to the database safely."); }
+
+function nextStage(){ if(stage < 3) setStage(stage+1); }
+function togglePlay(){
+  if(playing){ playing=false; clearTimers(); el("playBtn").textContent="▶ Resume"; }
+  else { playing=true; el("playBtn").textContent="⏸ Pause";
+         if(stage===-1 || stage===3) setStage(0); else setStage(stage); }
+}
+function restart(){ playing=true; el("playBtn").textContent="⏸ Pause"; setStage(0); }
+document.querySelectorAll(".step").forEach(st=> st.addEventListener("click", ()=>{ playing=false; el("playBtn").textContent="▶ Resume"; setStage(+st.dataset.s); }));
+
+function toast(msg){ const t = el("toast"); t.textContent = msg; t.classList.add("show");
+  setTimeout(()=>t.classList.remove("show"), 3200); }
+function demoAts(btn){ btn.textContent = "✓ Kit queued"; btn.classList.add("ok");
+  toast("Demo: in the live system, the resume-tailor agent builds an ATS-optimized resume from your base resume — honestly mirroring the posting's keywords — and saves it to your applications folder.");
+  setTimeout(()=>{ btn.textContent = "📄 Create ATS resume"; btn.classList.remove("ok"); }, 3500); }
+function demoApply(){ toast("Demo: in the live system this opens the employer's application page in a new tab."); }
+setStage(0);
+</script>
+</body>
+</html>
