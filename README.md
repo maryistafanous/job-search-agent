@@ -12,7 +12,8 @@ Every morning, unattended:
 
 1. **Data-Entry Agent** parses overnight job-alert emails (LinkedIn, Indeed), de-duplicates against everything already tracked, and inserts new roles into a SQLite database.
 2. **Screening Agent** opens each posting — automatically falling back to the employer's own careers site when LinkedIn won't render the description — and scores it 1–5 against *your* written fitness rubric and *your* resume. It records salary (only if actually stated), key gaps, and the strongest interview "anchor story" for each role.
-3. **Inbox-Sweep Agent** (on demand) reads recruiter/application emails and keeps every application's status current.
+3. **Career-Scan Agent** (weekly) proactively checks a curated list of target companies' own career pages — catching roles that never hit the job boards — and feeds matches into the same pipeline.
+4. **Inbox-Sweep Agent** (on demand) reads recruiter/application emails and keeps every application's status current.
 
 Your job shrinks to reviewing a prioritized shortlist over coffee.
 
@@ -44,7 +45,7 @@ See **[SETUP.md](SETUP.md)** for step-by-step instructions.
 
 ```
 templates/   your-inputs: fitness rubric + search profile (fill these in)
-skills/      the agent skill definitions (generic — no personal data)
+skills/      the agent skill definitions incl. proactive company career scan
 db/          SQLite schema for the tracker
 docs/        interactive demo (GitHub Pages site)
 SETUP.md     installation & first run
