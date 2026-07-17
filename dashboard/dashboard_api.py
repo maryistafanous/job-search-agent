@@ -151,7 +151,7 @@ def get_jobs():
         rm_expr = "Recruiter_Match" if "Recruiter_Match" in have else "NULL"
         rows = con.execute(
             f"""SELECT Job_ID, Title, Company, Location, Salary_Range, Fitness_Score,
-                      Date_Posted, App_URL, Key_Gaps, Anchor_Story, Status, {rm_expr}
+                      Date_Posted, App_URL, Key_Gaps, Anchor_Story, Status, {rm_expr}, Source
                FROM Job_Tracker ORDER BY Job_ID DESC"""
         ).fetchall()
     finally:
@@ -160,7 +160,7 @@ def get_jobs():
         dict(id=r[0], title=r[1] or "", co=r[2] or "", loc=r[3] or "", sal=r[4] or "",
              score=r[5] if r[5] is not None else 0, posted=r[6] or "", url=r[7] or "",
              gaps=r[8] or "", anchor=r[9] or "", status=r[10] or "",
-             rm=r[11])
+             rm=r[11], src=r[12] or "")
         for r in rows
     ]
     return {"ok": True, "jobs": jobs, "generated": datetime.now().isoformat(timespec="seconds")}

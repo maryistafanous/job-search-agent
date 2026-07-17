@@ -74,7 +74,7 @@ function currentRows(){
     return (x<y?-1:x>y?1:0)*d; });
   return rs; }
 
-var COLS = [["id","#"],["title","Role"],["sal","Salary"],["score","Fit"],["rm","Rec %"],["posted","Posted"],["status","Status"],[null,"Actions"]];
+var COLS = [["id","#"],["title","Role"],["src","Source"],["sal","Salary"],["score","Fit"],["rm","Rec %"],["posted","Posted"],["status","Status"],[null,"Actions"]];
 function render(){
   if(!JOBS.length){ el("tbl").innerHTML = '<div class="empty">The database returned 0 rows.</div>'; return; }
   var rs = currentRows();
@@ -91,6 +91,7 @@ function render(){
     var acts = j.url ? '<button class="atsbtn" data-kit="' + j.id + '">📄 ATS resume</button><a class="applybtn" href="' + esc(j.url) + '" target="_blank" rel="noopener">↗ Apply</a>' : "—";
     h += '<tr><td class="id">#' + j.id + '</td>' +
       '<td><b>' + esc(j.title) + '</b><br><span class="sub">' + esc(j.co) + ' · ' + esc(j.loc) + '</span>' + det + '</td>' +
+      '<td>' + esc(j.src||"—") + '</td>' +
       '<td>' + esc(j.sal) + '</td><td><span class="chip s' + j.score + '">' + (j.score||"—") + '</span></td>' +
       '<td>' + (j.rm!=null ? j.rm + '%' : '—') + '</td>' +
       '<td>' + esc(j.posted) + '</td>' +
