@@ -49,6 +49,6 @@ anything represents you. (Optional: have the screening summary end with
 
 ## Output
 
-Both files saved to an `applications/<Company>/` folder, plus a 5-line summary
+Both files saved to an `applications/<Company>/` folder (final kits only — all scratch/helper files go in `tmp/`), plus a 5-line summary
 of what was emphasized and which keywords were mirrored — so the user can
 sanity-check the tailoring in 30 seconds.

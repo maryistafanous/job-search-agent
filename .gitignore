@@ -1,0 +1,20 @@
+# personal / machine-specific
+config.json
+logs/
+*.db
+*.db-journal
+*.db-wal
+*.db.lock
+*.bak
+*.bak-*
+# live DB + machine state now live under db/ (schema.sql stays tracked)
+db/job_search.db
+db/career_scan_state.json
+backups/
+__pycache__/
+.claude/settings.local.json
+_tmp_*
+tmp_*
+tmp/
+.playwright-mcp/
+applications/

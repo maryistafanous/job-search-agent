@@ -44,6 +44,19 @@ Explicit NON-red-flags (things that look scary but you're fine with):
 - **2 — stretch, probably skip:** red flag or heavy reframing for thin payoff
 - **1 — skip:** wrong level, wrong scope, or disqualifying red flag
 
+## Recruiter_Match score (0–100%)
+
+Scored AFTER the fitness score, from the opposite chair: the agent becomes the posting's recruiter reading your resume cold. Your experience-baseline reframings above do NOT apply — a screener only credits what the resume literally shows in the posting's vocabulary. Start at 100 and deduct:
+
+- Domain/industry depth the JD asks for that the resume doesn't show: −15 preferred, −25 required
+- Title-history mismatch (resume never carried a title close to the posting's): −15
+- Missing JD hard-skill keywords: −5 each, max −20
+- Seniority direction (resume reads a level below: −10; overqualified: −5)
+- Experience minimums the resume doesn't explicitly evidence: −10
+- Location / work-authorization / clearance friction: −10
+
+Bands: 80–100 shortlisted as-is; 60–79 shortlisted with tailoring; 40–59 heavy tailoring or referral; <40 referral only. Fitness answers "do I want it?"; Recruiter_Match answers "will screening pass me?" — a role can score high on one and low on the other.
+
 ## Anchor stories (the agent picks one per job)
 
 Your 5–10 proudest ownership stories, each with when to use it:

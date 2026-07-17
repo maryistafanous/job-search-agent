@@ -53,6 +53,6 @@ One JSON object, nothing around it:
   "job_title": "", "company": "", "url": "", "jd": "",
   "salary_range": "string or Unlisted", "employment_type": "string or null",
   "date_posted": "YYYY-MM-DD", "hiring_contact": "Name, Title or null",
-  "track": "", "fitness_score": 0, "key_gaps": [], "anchor_story": "", "notes": ""
+  "track": "", "fitness_score": 0, "recruiter_match": 0, "key_gaps": [], "anchor_story": "", "notes": ""
 }
 ```

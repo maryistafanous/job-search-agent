@@ -1,0 +1,36 @@
+<!DOCTYPE html>
+<html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Job Dashboard</title>
+<link rel="stylesheet" href="/static/styles.css">
+</head><body><div class="wrap">
+<h1>🎯 Job Dashboard <span style="font-size:13px;color:var(--green)">● live</span></h1>
+<div class="meta" id="meta">Loads from the tracker database via the local API · status changes are saved straight to the database</div>
+<div id="errbox"></div>
+<div class="cards" id="cards" style="display:none">
+ <div class="card"><div class="big" id="c_nfit">–</div><div class="lbl">ready to apply (4–5)</div></div>
+ <div class="card"><div class="big" id="c_toapply">–</div><div class="lbl">to apply (all scores)</div></div>
+ <div class="card"><div class="big" id="c_applied">–</div><div class="lbl">applied</div></div>
+ <div class="card"><div class="big" id="c_total">–</div><div class="lbl">total tracked</div></div>
+</div>
+<div class="hint">📄 <b>ATS resume</b> runs the resume-tailor kit on your machine · ↗ <b>Apply</b> opens the posting · change a <b>Status</b> dropdown, then press <b>💾 Save to database</b> in the bottom bar. Click any column header to sort.</div>
+<div class="tabs" id="tabs">
+  <button class="tab on" data-v="fit">🎯 Ready (high-fit)</button>
+  <button class="tab" data-v="pend">📋 Pending — To Apply</button>
+  <button class="tab" data-v="all">🗂 All postings</button>
+  <button class="rfbtn" id="refreshbtn">↻ Refresh</button>
+</div>
+<div class="fbar" id="fbar">
+  <input id="q" placeholder="Search title / company…">
+  <select id="fstatus"><option value="">Any status</option></select>
+  <select id="fscore"><option value="">Any score</option>
+    <option value="5">5 only</option><option value="4">4+</option><option value="3">3+</option><option value="2">2+</option></select>
+</div>
+<div id="loading">Loading…</div>
+<div id="tbl"></div>
+</div>
+<div id="pendbar"><span id="pendtxt"></span>
+  <button id="savebtn">💾 Save to database</button>
+  <button class="ghost" id="clearbtn">Clear</button></div>
+<div id="toast"></div>
+<script src="/static/app.js"></script>
+</body></html>

@@ -16,7 +16,8 @@ CREATE TABLE IF NOT EXISTS Job_Tracker (
     Date_Posted TEXT,        -- ISO date
     HM_or_TA TEXT,           -- named hiring contact, or 'Not listed'
     Job_Track TEXT,          -- which rubric track scored this role
-    Fitness_Score INTEGER,   -- 1-5 per the rubric
+    Fitness_Score INTEGER,   -- 1-5 per the rubric (targeting lens: is this the kind of role I want?)
+    Recruiter_Match INTEGER, -- 0-100 % (recruiter lens: would a screener shortlist this resume?)
     Key_Gaps TEXT,
     Anchor_Story TEXT,
     Notes TEXT,              -- PROVISIONAL flags, source URLs, scratchpad

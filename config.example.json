@@ -1,0 +1,25 @@
+{
+  "owner_name": "Your Name",
+  "owner_email": "you@example.com",
+  "db_path": "C:/JobSearchData/job_search.db",
+  "resume_path": "C:/JobSearchData/resume.docx",
+  "rubric_path": "C:/JobSearchData/fitness-rubric.md",
+  "search_profile_path": "C:/JobSearchData/search-profile.md",
+  "target_companies_csv": "C:/JobSearchData/target-companies.csv",
+  "scan_state_path": "C:/JobSearchData/career_scan_state.json",
+  "backup_dir": "C:/JobSearchData/backups",
+  "dashboard_port": 8765,
+  "gmail": {
+    "alert_label": "linkedin-job-alerts",
+    "processed_labels": {
+      "application": "Applications",
+      "update": "App Update",
+      "interview": "interview"
+    }
+  },
+  "status_values": ["To Apply", "Applied", "Interview Requested", "Interviewing", "Offer", "Rejected", "Expired", "SKIP", "N/A"],
+  "transition": {
+    "honor_lock_file": true,
+    "_comment": "Keep true while any legacy writer (e.g. a sandboxed pipeline) still writes the DB via the old lock-file protocol. Set false after full cutover to this runtime."
+  }
+}

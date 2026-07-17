@@ -1,0 +1,24 @@
+{
+  "permissions": {
+    "allow": [
+      "Read",
+      "Glob",
+      "Grep",
+      "Write",
+      "Edit",
+      "WebFetch",
+      "WebSearch",
+      "Bash(python*)",
+      "Bash(py *)",
+      "Bash(dir*)",
+      "Bash(mkdir*)",
+      "Bash(type *)",
+      "Bash(curl*)",
+      "Bash(sqlite3*)",
+      "mcp__claude_ai_Gmail",
+      "mcp__claude_ai_Indeed",
+      "mcp__claude-in-chrome",
+      "mcp__playwright"
+    ]
+  }
+}

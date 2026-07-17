@@ -1,0 +1,44 @@
+:root{color-scheme:light;--navy:#1F4E79;--blue:#2E75B6;--lt:#EAF2F8;--green:#3E8E48;--greenbg:#E3F0E4;--amber:#9C7A1E;--amberbg:#FFF3DC;--red:#C0504D;--redbg:#F6E3E2;--gray:#666;--border:#D8DEE6}
+*{box-sizing:border-box;margin:0;padding:0}
+body{font-family:Arial,Helvetica,sans-serif;background:#F4F6F9;color:#2B2B2B;padding:24px 24px 90px}
+.wrap{max-width:1180px;margin:0 auto}
+h1{color:var(--navy);font-size:24px}.meta{color:var(--gray);font-size:13px;margin:6px 0 16px}
+.cards{display:grid;grid-template-columns:repeat(4,1fr);gap:12px;margin-bottom:16px}
+.card{background:var(--lt);border-radius:10px;padding:12px;text-align:center}
+.card .big{font-size:26px;font-weight:bold;color:var(--navy)}.card .lbl{font-size:12px;color:var(--gray)}
+.hint{background:#FFF8E7;border:1px solid #E8D49A;border-radius:8px;padding:9px 14px;font-size:12.5px;color:#7A6420;margin-bottom:14px}
+.tabs{display:flex;gap:8px;margin-bottom:12px;flex-wrap:wrap}
+.tab{background:#fff;border:1px solid var(--border);border-radius:8px;padding:8px 16px;font-size:13.5px;cursor:pointer;font-family:inherit;color:var(--gray)}
+.tab.on{background:var(--navy);color:#fff;border-color:var(--navy);font-weight:bold}
+.fbar{display:none;gap:10px;margin-bottom:12px;flex-wrap:wrap}
+.fbar.show{display:flex}
+.fbar input,.fbar select{padding:7px 10px;border:1px solid var(--border);border-radius:7px;font-size:13px;font-family:inherit}
+.fbar input{flex:1;min-width:180px}
+table{width:100%;border-collapse:collapse;font-size:13px;background:#fff;border:1px solid var(--border)}
+th{background:var(--navy);color:#fff;text-align:left;padding:9px 10px;font-size:12px;cursor:pointer;user-select:none;white-space:nowrap}
+th .dir{opacity:.7;font-size:10px}
+td{padding:8px 10px;border-bottom:1px solid #EEF1F5;vertical-align:top}
+.id{color:var(--gray)}.sub{color:var(--gray)}
+.detail{font-size:11.5px;color:#8a94a0;margin-top:3px;max-width:420px}
+.chip{display:inline-block;padding:2px 10px;border-radius:12px;font-weight:bold;font-size:12px}
+.s5,.s4{background:var(--greenbg);color:var(--green)}.s3{background:var(--amberbg);color:var(--amber)}.s2,.s1,.s0{background:var(--redbg);color:var(--red)}
+.actions{white-space:nowrap}
+.atsbtn{background:var(--blue);color:#fff;border:none;border-radius:7px;padding:6px 10px;font-size:12px;cursor:pointer;font-family:inherit}
+.atsbtn:hover{background:var(--navy)}.atsbtn.ok{background:var(--green)}
+.applybtn{display:inline-block;background:#fff;color:var(--blue);border:1px solid var(--blue);border-radius:7px;padding:5px 10px;font-size:12px;text-decoration:none;margin-left:4px}
+.applybtn:hover{background:var(--lt)}
+select.stsel{padding:5px 6px;border:1px solid var(--border);border-radius:6px;font-size:12px;font-family:inherit;background:#fff}
+select.stsel.dirty{border-color:var(--amber);background:var(--amberbg);font-weight:bold}
+#pendbar{position:fixed;bottom:0;left:0;right:0;background:var(--navy);color:#fff;padding:12px 24px;display:none;align-items:center;gap:14px;font-size:13.5px;z-index:10}
+#pendbar.show{display:flex}
+#pendbar button{background:#fff;color:var(--navy);border:none;border-radius:7px;padding:8px 16px;font-weight:bold;cursor:pointer;font-family:inherit}
+#pendbar button:disabled{opacity:.6;cursor:wait}
+#pendbar button.ghost{background:transparent;color:#cfe0f0;border:1px solid #6b8db0}
+#toast{position:fixed;bottom:70px;left:50%;transform:translateX(-50%);background:#333;color:#fff;padding:10px 18px;border-radius:8px;font-size:13px;opacity:0;transition:opacity .3s;pointer-events:none;max-width:90%;z-index:11}
+#toast.show{opacity:1}
+.empty{padding:26px;text-align:center;color:var(--gray);background:#fff;border:1px solid var(--border)}
+#loading{padding:30px;text-align:center;color:var(--gray);font-size:14px}
+.err{background:var(--redbg);border:1px solid var(--red);color:#7a2f2d;border-radius:8px;padding:12px 16px;font-size:13px;margin-bottom:12px;white-space:pre-wrap;word-break:break-word}
+.err button{margin-top:8px;background:var(--red);color:#fff;border:none;border-radius:7px;padding:7px 14px;cursor:pointer;font-family:inherit}
+.rfbtn{background:#fff;border:1px solid var(--border);border-radius:8px;padding:8px 12px;font-size:13px;cursor:pointer;font-family:inherit;color:var(--gray)}
+@media(max-width:760px){.cards{grid-template-columns:repeat(2,1fr)}.actions{white-space:normal}}
